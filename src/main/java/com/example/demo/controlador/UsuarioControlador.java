@@ -1,6 +1,8 @@
 package com.example.demo.controlador;
 
 import com.example.demo.dto.UsuarioDTO;
+import com.example.demo.error.ProductoNotFoundException;
+import com.example.demo.error.UsuarioNotFoundException;
 import com.example.demo.modelo.Usuario;
 import com.example.demo.repos.UsuarioRepositorio;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +59,7 @@ public class UsuarioControlador {
 
                     return ResponseEntity.ok().location(location).body(existingUsuario);
                 })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(UsuarioNotFoundException::new);
     }
 
     @DeleteMapping("/{id}")
@@ -75,6 +77,6 @@ public class UsuarioControlador {
 
                     return ResponseEntity.noContent().location(location).build();
                 })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(UsuarioNotFoundException::new);
     }
 }

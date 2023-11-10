@@ -2,6 +2,8 @@ package com.example.demo.controlador;
 
 import com.example.demo.dto.ProductoDTO;
 import com.example.demo.error.DuplicateProductException;
+import com.example.demo.error.GlobalExceptionHandler;
+import com.example.demo.error.ProductoNotFoundException;
 import com.example.demo.repos.ProductoRepositorio;
 import com.example.demo.repos.UsuarioRepositorio;
 import com.example.demo.error.UsuarioNotFoundException;
@@ -23,6 +25,7 @@ import java.util.Objects;
 public class ProductoControlador {
     private final ProductoRepositorio productoRepositorio;
     private final UsuarioRepositorio usuarioRepositorio;
+    private  GlobalExceptionHandler exceptionHandler;
 
     public ProductoControlador(ProductoRepositorio productoRepositorio, UsuarioRepositorio usuarioRepositorio) {
         this.productoRepositorio = productoRepositorio;
@@ -38,8 +41,11 @@ public class ProductoControlador {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductoDTO> getProductoById(@PathVariable Long id) {
-        ProductoDTO producto = new ProductoDTO(Objects.requireNonNull(productoRepositorio.findById(id).orElse(null)));
-        return ResponseEntity.ok(producto);
+        Producto producto = productoRepositorio.findById(id)
+                .orElseThrow(ProductoNotFoundException::new);
+
+        ProductoDTO productoDTO = new ProductoDTO(producto);
+        return ResponseEntity.ok(productoDTO);
     }
 
     @PostMapping("/")
@@ -73,7 +79,7 @@ public class ProductoControlador {
 
                     return ResponseEntity.ok().location(location).body(updatedProducto);
                 })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(ProductoNotFoundException::new );
     }
 
 
@@ -90,7 +96,7 @@ public class ProductoControlador {
                             .toUri();
                     return ResponseEntity.ok().location(location).body("Producto with the id "+id   +"has been deleted");
                 })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(ProductoNotFoundException::new);
     }
 
 
@@ -108,7 +114,7 @@ public class ProductoControlador {
                             .toUri();
                     return ResponseEntity.created(location).body(createdProducto);
                 })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(ProductoNotFoundException::new);
     }
 
 
@@ -134,7 +140,7 @@ public class ProductoControlador {
 
                     return ResponseEntity.ok().location(location).body(updatedProducto);
                 })
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .orElseThrow(ProductoNotFoundException::new);
     }
 
 

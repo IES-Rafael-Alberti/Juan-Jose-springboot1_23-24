@@ -15,18 +15,19 @@ public class GlobalExceptionHandler {
 
         if (ex instanceof UsuarioNotFoundException || ex instanceof ProductoNotFoundException) {
             status = HttpStatus.NOT_FOUND;
+            message = "The item was not found in the database";
+            return new ResponseEntity<>(message, status);
         } else if ( ex instanceof DuplicateProductException) {
             status = HttpStatus.CONFLICT;
+            message = "The item already exists in the database";
+            return new ResponseEntity<>(message, status);
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
+            message = "An error not handled has occurred ";
+            return new ResponseEntity<>(message, status);
         }
 
-        if (ex.getMessage() != null) {
-            message = ex.getMessage();
-        } else {
-            message = "An error occurred.";
-        }
 
-        return new ResponseEntity<>(message, status);
+
     }
 }
