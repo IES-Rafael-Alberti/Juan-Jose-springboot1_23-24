@@ -1,6 +1,7 @@
 package com.example.demo.dto;
 
 import com.example.demo.modelo.Producto;
+import com.example.demo.modelo.Usuario;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,12 +15,15 @@ public class ProductoDTO {
     Long id;
     String name;
     BigDecimal price;
-    Long usuarioId;
+    Long usuario;
 
-    public ProductoDTO(Producto producto){
+    public ProductoDTO(Producto producto) {
         id = producto.getId();
         name = producto.getName();
         price = producto.getPrice();
-        usuarioId = producto.getUsuario().getId();
+
+        // Check if the usuario is not null before accessing its getId() method
+        usuario = (producto.getUsuario() != null) ? producto.getUsuario().getId() : null;
+
     }
 }

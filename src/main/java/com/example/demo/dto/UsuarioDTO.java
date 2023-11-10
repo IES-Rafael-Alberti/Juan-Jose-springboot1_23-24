@@ -21,8 +21,12 @@ public class UsuarioDTO {
         id = usuario.getId();
         name = usuario.getName();
         email = usuario.getEmail();
-        for (Producto producto: usuario.getProductos()){
-            productos.add(producto.getId());
+
+        // Check if productos is not null before iterating
+        if (usuario.getProductos() != null) {
+            for (Producto producto: usuario.getProductos()){
+                productos.add(producto.getId());
+            }
         }
     }
 }
